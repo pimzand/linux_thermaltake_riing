@@ -9,7 +9,7 @@ with open('README.md') as f:
 DATA_FILE_LOCATION = '/usr/share/linux_thermaltake_rgb'
 setup(
     name='linux_thermaltake_rgb',
-    version='PROJECTVERSION',
+    version='0.2.0',
     packages=find_packages(),
     url='https://github.com/chestm007/linux_thermaltake_rgb',
     license='GPL-2.0',
@@ -22,7 +22,7 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=[
         "pyyaml",
-        "GObject",
+        "PyGObject",
         "psutil",
         "pyusb",
         "numpy"
