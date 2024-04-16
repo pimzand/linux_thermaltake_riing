@@ -87,10 +87,10 @@ class LightingEffect(ClassifiedObject):
 
 
 class CustomLightingEffect(LightingEffect):
-    SLOW = 1
-    NORMAL = 0.75
-    FAST = 0.5
-    EXTREME = 0.25
+    SLOW = 0x03
+    NORMAL = 0x02
+    FAST = 0x01
+    EXTREME = 0x00
 
     def __init__(self, config):
         super().__init__(config)
