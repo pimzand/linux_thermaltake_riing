@@ -200,6 +200,45 @@ class TemperatureLightingEffect(ThreadedCustomLightingEffect):
         return f'temperature lighting'
 
 
+class Temperature2LightingEffect(ThreadedCustomLightingEffect):
+    """
+    ::: settings: [sensor_name, cold:{r,g,b}, hot:{r,g,b}]
+    """
+    model = 'temperature2'
+    RGBMap = namedtuple('RGBMap', ['g', 'r', 'b'])
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.sensor_name = self._config.get('sensor_name')
+        self.cold = int(self._config.get('cold', 20))
+        self.hot = int(self._config.get('hot', 60))
+        self.cold_rgb = self.RGBMap(**self._config.get('cold_rgb'))
+        self.hot_rgb = self.RGBMap(**self._config.get('hot_rgb'))
+        self.cur_rgb = [0, 0, 0]
+        self.cur_temp = 0
+
+    def next(self):
+        def flatten(l):
+            return [item for sublist in l for item in sublist]
+
+        self.cur_temp = sensors_temperatures().get(self.sensor_name)[0].current
+        if self.cur_temp < self.cold:
+            self.cur_temp = self.cold
+        elif self.cur_temp > self.hot:
+            self.cur_temp = self.hot
+
+        factor = (self.cur_temp - self.cold) / (self.hot - self.cold)
+        for i, c in enumerate(self.cur_rgb):
+            self.cur_rgb[i] = self.cold_rgb[i] + round(factor * (self.hot_rgb[i] - self.cold_rgb[i]))
+
+        for dev in self._devices:
+            values = self.cur_rgb * dev.num_leds
+            dev.set_lighting(values=values)
+
+    def __str__(self) -> str:
+        return f'temperature2 lighting'
+
+
 class ThermaltakeLightingEffect(LightingEffect):
     def __init__(self, config):
         super().__init__(config)

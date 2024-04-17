@@ -80,6 +80,19 @@ lighting_manager:
 #  hot: 60
 #  speed: extreme
 
+#  model: temperature2
+#  sensor_name: k10temp
+#  cold: 30
+#  hot: 60
+#  cold_rgb:
+#    r: 0
+#    g: 0
+#    b: 50
+#  hot_rgb:
+#    r: 50
+#    g: 0
+#    b: 0
+
 #  model: alternating
 #  odd_rgb:
 #    r: 50
