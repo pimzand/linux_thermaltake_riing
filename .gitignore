@@ -6,3 +6,4 @@ Makefile
 CMakeLists.txt
 .idea/
 venv/
+build/
