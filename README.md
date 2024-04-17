@@ -134,6 +134,16 @@ g/r/b: RGB values of the desired colour
     - hot [desired temperature to set lighting to red]
     - target [desired temperature to set lighting to green]
 
+- temperature2
+  will set lighting to a colour between any two user supplied colours
+  depending on the temperature of the selected sensor
+  - settings: 
+    - sensor_name [name of the sensor to get temperature reading from(names can be found by running `sensors` in a terminal)]
+    - cold [desired temperature to set lighting to the corresponding colour]
+    - hot [desired temperature to set lighting to the corresponding colour]
+    - cold_rgb [ the colour to be used for the cold temperature]
+    - hot_rgb [ the colour to be used for the hot temperature]
+
 - full 
   sets lighting to this colour
   - settings: 
