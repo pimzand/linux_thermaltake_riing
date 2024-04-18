@@ -93,6 +93,14 @@ lighting_manager:
 #    g: 0
 #    b: 0
 
+#  model: clock
+#  timestamps:
+#    - ["00:59", 1, 2,  3] # [anything parsable by dateutil parse method, r, g, b]
+#    - ["11 AM", 201, 2, 3]
+#    - ["23:00", 1, 202, 3]
+#    - ["17:48", 1, 2, 203]
+#    - ["10:45 pm", 101, 102, 103]
+
 #  model: alternating
 #  odd_rgb:
 #    r: 50

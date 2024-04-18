@@ -28,6 +28,8 @@ from linux_thermaltake_rgb.classified_object import ClassifiedObject
 from linux_thermaltake_rgb.globals import RGB
 import math
 
+import datetime
+from dateutil.parser import parse
 
 def compass_to_rgb(h, s=1, v=1):
     h = float(h)
@@ -237,6 +239,59 @@ class Temperature2LightingEffect(ThreadedCustomLightingEffect):
 
     def __str__(self) -> str:
         return f'temperature2 lighting'
+
+
+class ClockLightingEffect(ThreadedCustomLightingEffect):
+    """
+    ::: settings: [[timestamp, r, g, b], [timestamp, r, g, b], ...]
+    """
+    model = 'clock'
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.timestamps = config.get('timestamps')
+        for i, timestamp in enumerate(self.timestamps):
+            self.timestamps[i][0] = parse(timestamp[0])
+        self.cur_rgb = [0, 0, 0]
+
+    def next(self):
+        now = datetime.datetime.now()
+        one_day = datetime.timedelta(days=1)
+        before = None
+        after  = None
+
+        for i, timestamp in enumerate(self.timestamps):
+            time = timestamp[0]
+            if (now > time):
+                # today
+                timedelta = now - time
+                if not before or before[1] > timedelta:
+                    before = (i, timedelta)
+                # tomorrow
+                timedelta = (time + one_day) - now
+                if not after or after[1] > timedelta:
+                    after = (i, timedelta)
+            else:
+                # today
+                timedelta = time - now
+                if not after or after[1] > timedelta:
+                    after = (i, timedelta)
+                # yesterday
+                timedelta = now - (time - one_day)
+                if not before or before[1] > timedelta:
+                    before = (i, timedelta)
+
+        factor = before[1] / (before[1] + after[1])
+        for i in range(0, 2):
+            self.cur_rgb[i] = round(self.timestamps[before[0]][i+1] + (self.timestamps[after[0]][i+1] - self.timestamps[before[0]][i+1]) * factor)
+        cur_grb = [self.cur_rgb[1], self.cur_rgb[0], self.cur_rgb[2]]
+
+        for dev in self._devices:
+            values = cur_grb * dev.num_leds
+            dev.set_lighting(values=values)
+
+    def __str__(self) -> str:
+        return f'clock lighting'
 
 
 class ThermaltakeLightingEffect(LightingEffect):
