@@ -150,7 +150,7 @@ class AlternatingLightingEffect(CustomLightingEffect):
                     values.extend(self.even_rgb)
                 else:
                     values.extend(self.odd_rgb)
-            dev.set_lighting(values=values)
+            dev.set_lighting(mode=dev.controller.driver.BY_LED, values=values)
 
     def __str__(self) -> str:
         return f'alternating lighting {self.odd_rgb} {self.even_rgb}'
@@ -196,7 +196,7 @@ class TemperatureLightingEffect(ThreadedCustomLightingEffect):
                                 * (self.cur_temp - self.target))
         for dev in self._devices:
             values = flatten([compass_to_rgb(self.angle)] * dev.num_leds)
-            dev.set_lighting(values=values)
+            dev.set_lighting(mode=dev.controller.driver.BY_LED, values=values)
 
     def __str__(self) -> str:
         return f'temperature lighting'
@@ -235,7 +235,7 @@ class Temperature2LightingEffect(ThreadedCustomLightingEffect):
 
         for dev in self._devices:
             values = self.cur_rgb * dev.num_leds
-            dev.set_lighting(values=values)
+            dev.set_lighting(mode=dev.controller.driver.BY_LED, values=values)
 
     def __str__(self) -> str:
         return f'temperature2 lighting'
@@ -288,7 +288,7 @@ class ClockLightingEffect(ThreadedCustomLightingEffect):
 
         for dev in self._devices:
             values = cur_grb * dev.num_leds
-            dev.set_lighting(values=values)
+            dev.set_lighting(mode=dev.controller.driver.BY_LED, values=values)
 
     def __str__(self) -> str:
         return f'clock lighting'
@@ -355,7 +355,7 @@ class PerLEDLightingEffect(ThermaltakeLightingEffect):
             LOGGER.warn('%s not found in config item: lighting_controller', e)
 
         for device in self._devices:
-            device.set_lighting(mode=RGB.Mode.BY_LED, speed=0x00, values=values)
+            device.set_lighting(mode=device.controller.driver.BY_LED, speed=0x00, values=values)
 
 
 class FlowLightingEffect(ThermaltakeLightingEffect):

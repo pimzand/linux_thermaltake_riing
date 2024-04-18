@@ -114,11 +114,14 @@ class ThermaltakeControllerDriver:
         return self.endpoint_in.read(length)
 
     def save_profile(self):
-        self.write_out([0x32, 0x53])
+        # this would freeze a Riing Quad controller
+        #self.write_out([0x32, 0x53])
+        pass
 
 
 class ThermaltakeG3ControllerDriver(ThermaltakeControllerDriver):
     PRODUCT_ID_BASE = 0x1fa5
+    BY_LED = 0x18
 
     def init(self, unit=1):
         self.product_id = self.PRODUCT_ID_BASE + (unit - 1)
@@ -129,3 +132,9 @@ class ThermaltakeG3ControllerDriver(ThermaltakeControllerDriver):
 
 class ThermaltakeRiingTrioControllerDriver(ThermaltakeG3ControllerDriver):
     PRODUCT_ID_BASE = 0x2135
+    BY_LED = 0x24
+
+
+class ThermaltakeRiingQuadControllerDriver(ThermaltakeG3ControllerDriver):
+    PRODUCT_ID_BASE = 0x2260
+    BY_LED = 0x24
