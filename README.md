@@ -144,14 +144,14 @@ g/r/b: RGB values of the desired colour
     - cold_rgb [ the colour to be used for the cold temperature]
     - hot_rgb [ the colour to be used for the hot temperature]
 
-   model: clock
-   will set lighting to a colour defined by the time of day, slowly fading from the previous to the next colour
-   timestamps:
-     - ["00:59", 1, 2,  3] # [anything parsable by dateutil parse method, r, g, b]
-     - ["11 AM", 201, 2, 3]
-     - ["23:00", 1, 202, 3]
-     - ["17:48", 1, 2, 203]
-     - ["10:45 pm", 101, 102, 103]
+- model: clock
+  will set lighting to a colour defined by the time of day, slowly fading from the previous to the next colour
+  timestamps:
+    - ["00:59", 1, 2,  3] # [anything parseable by dateutil parse method, r, g, b]
+    - ["11 AM", 201, 2, 3]
+    - ["23:00", 1, 202, 3]
+    - ["17:48", 1, 2, 203]
+    - ["10:45 pm", 101, 102, 103]
 
 - full 
   sets lighting to this colour
