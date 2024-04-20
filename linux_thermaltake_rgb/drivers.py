@@ -39,27 +39,39 @@ class ThermaltakeControllerDriver:
     def _initialize_device(self):
         self.device = usb.core.find(idVendor=self.vendor_id,
                                     idProduct=self.product_id)
-        # fail safe incase last device usage was dirty
-        self.device.reset()
+
+        device_ids = "{:04x}:{:04x}".format(self.vendor_id, self.product_id)
 
         if self.device is None:
-            raise ValueError('Device not found')
+            raise ValueError('Device {} not found'.format(device_ids))
+
+
+        # fail safe incase last device usage was dirty
+        LOGGER.debug('resetting device {}'.format(device_ids))
+        self.device.reset()
 
         # Linux kernel sets up a device driver for USB device, which you have
         # to detach. Otherwise trying to interact with the device gives a
         # 'Resource Busy' error.
-        try:
-            self.device.detach_kernel_driver(0)
-        except Exception:
-            LOGGER.warning('kernel driver already detached')
+        if self.device.is_kernel_driver_active(0):
+            try:
+                self.device.detach_kernel_driver(0)
+                LOGGER.debug('successfully detached kernel driver for device {}'.format(device_ids))
+            except Exception:
+                LOGGER.warning('kernel driver already detached for device {}'.format(device_ids))
+        else:
+            LOGGER.debug('no kernel driver active for device {}'.format(device_ids))
 
+        # set the configuration
+        LOGGER.debug('setting configuration for device {}'.format(device_ids))
         self.device.set_configuration()
 
         # claim the device
         try:
             usb.util.claim_interface(self.device, 0)
+            LOGGER.debug('successfully claimed interface for device {}'.format(device_ids))
         except usb.core.USBError as e:
-            LOGGER.error('{} while claiming interface for device'.format(e))
+            LOGGER.error('{} while claiming interface for device {}'.format(e, device_ids))
             raise e
 
         self.cfg = self.device.get_active_configuration()
