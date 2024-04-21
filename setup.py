@@ -25,7 +25,8 @@ setup(
         "PyGObject",
         "psutil",
         "pyusb",
-        "numpy"
+        "numpy",
+        "python-dateutil"
     ],
     entry_points="""
         [console_scripts]
