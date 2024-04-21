@@ -67,6 +67,13 @@ class ThermaltakeG3Controller(ThermaltakeController):
         self.driver = drivers.ThermaltakeG3ControllerDriver(self.unit)
 
 
+class ThermaltakeRiingPlusController(ThermaltakeController):
+    model = 'riingplus'
+
+    def init(self):
+        self.driver = drivers.ThermaltakeRiingPlusControllerDriver(self.unit)
+
+
 class ThermaltakeRiingTrioController(ThermaltakeController):
     model = 'riingtrio'
 
@@ -84,6 +91,9 @@ class ThermaltakeRiingQuadController(ThermaltakeController):
 def controller_factory(unit_type=None, unit=1, **kwargs) -> ThermaltakeController:
     if unit_type.lower() == 'g3':
         return ThermaltakeG3Controller(unit)
+
+    elif unit_type.lower() == 'riingplus':
+        return ThermaltakeRiingPlusController(unit)
 
     elif unit_type.lower() == 'riingtrio':
         return ThermaltakeRiingTrioController(unit)
