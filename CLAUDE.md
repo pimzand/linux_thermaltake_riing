@@ -52,17 +52,18 @@ Consequence: **a new subclass is only discoverable if its module has been import
 
 ### Controller / driver split
 
-- `controllers.py` — high-level `ThermaltakeController` subclasses (`g3`, `riingplus`, `riingtrio`, `riingquad`). Each picks a driver from `drivers.py`.
+- `controllers.py` — high-level `ThermaltakeController` subclasses (`g3`, `riingplus`, `riingtrio`). Each picks a driver from `drivers.py`.
 - `drivers.py` — pyusb-level. The base class' `_initialize_device()` resets the device, detaches the kernel driver, claims interface 0, and finds the in/out endpoints.
 
 USB IDs and per-controller constants:
 - G3 / RiingPlus: `PRODUCT_ID_BASE = 0x1fa5`, `BY_LED = 0x18` — they share IDs (the `riingplus` controller is effectively a name alias for `g3`).
 - RiingTrio: `PRODUCT_ID_BASE = 0x2135`, `BY_LED = 0x24`.
-- RiingQuad: `PRODUCT_ID_BASE = 0x2260`, `BY_LED = 0x24`. **Riing Quad must NOT be sent the `0x32 0x53` save-profile command — it freezes the controller.** The Quad driver overrides `save_profile` to a no-op.
+
+Historical note: a `riingquad` controller (`0x2260`) was added in this fork and later removed. The Riing Quad must NOT be sent the `0x32 0x53` save-profile command — it freezes the controller. If you re-add Quad support, override `save_profile` to a no-op in the Quad driver, as the now-removed `ThermaltakeRiingQuadControllerDriver` did.
 
 ### `BY_LED` is per-driver, not global
 
-`linux_thermaltake_rgb/globals.py` defines `RGB.Mode.BY_LED = 0x18` (matching G3). Trio and Quad need `0x24`. Custom lighting effects in `lighting_manager.py` must therefore use `device.controller.driver.BY_LED`, not `RGB.Mode.BY_LED`. When adding a new custom effect that issues a per-LED write, follow the same pattern.
+`linux_thermaltake_rgb/globals.py` defines `RGB.Mode.BY_LED = 0x18` (matching G3). Trio needs `0x24`. Custom lighting effects in `lighting_manager.py` must therefore use `device.controller.driver.BY_LED`, not `RGB.Mode.BY_LED`. When adding a new custom effect that issues a per-LED write, follow the same pattern.
 
 ### Wire protocol cheatsheet (`globals.py`)
 
@@ -70,7 +71,7 @@ USB writes are 64-byte packets, zero-padded by `_populate_partial_data_array`. F
 
 - `PROTOCOL_GET = 0x33`, `PROTOCOL_SET = 0x32`
 - `PROTOCOL_FAN = 0x51`, `PROTOCOL_LIGHT = 0x52`
-- Lighting modes (`RGB.Mode`): FLOW=0x00, SPECTRUM=0x04, RIPPLE=0x08, BLINK=0x0c, PULSE=0x10, WAVE=0x14, BY_LED=0x18 (G3) / 0x24 (Trio/Quad), FULL=0x19.
+- Lighting modes (`RGB.Mode`): FLOW=0x00, SPECTRUM=0x04, RIPPLE=0x08, BLINK=0x0c, PULSE=0x10, WAVE=0x14, BY_LED=0x18 (G3) / 0x24 (Trio), FULL=0x19.
 - Lighting speeds (`RGB.Speed` and `CustomLightingEffect.{SLOW,NORMAL,FAST,EXTREME}`): bytes `0x03 / 0x02 / 0x01 / 0x00`. (Upstream had these as floats — that was a bug; see `c701a0a`.)
 
 ### Adding things

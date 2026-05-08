@@ -24,20 +24,23 @@ recognized two controllers, `g3` and `riingtrio`.
   `f103023`. README markup fix for the related clock model in `6ea654b`.
 - `212f471` — added `build/` to `.gitignore`.
 
-## Riing Quad support
+## Riing Quad support (added, then removed)
 
 - `ed4daca` "preliminary Riing Quad controller support":
   - New `ThermaltakeRiingQuadController` / `ThermaltakeRiingQuadControllerDriver`
     (USB product ID base `0x2260`).
-  - Introduced a per-driver `BY_LED` constant (G3 = `0x18`, Trio/Quad = `0x24`)
-    and changed every custom effect (`Alternating`, `Temperature`,
-    `Temperature2`, `Clock`, `PerLED`) to use
+  - Introduced a per-driver `BY_LED` constant (G3 = `0x18`, Trio = `0x24`,
+    Quad = `0x24`) and changed every custom effect (`Alternating`,
+    `Temperature`, `Temperature2`, `Clock`, `PerLED`) to use
     `device.controller.driver.BY_LED` instead of the hard-coded
-    `RGB.Mode.BY_LED`. This is what makes per-LED effects work on Trio and
-    Quad.
+    `RGB.Mode.BY_LED`. This is what makes per-LED effects work on Trio (and
+    formerly Quad).
   - Disabled the `save_profile` write (`0x32 0x53`) on the base driver class
     because it freezes a Riing Quad. The G3 driver keeps issuing it; the Quad
     driver has its own no-op override.
+- The Quad classes were later removed from this fork (no longer using that
+  hardware). The per-driver `BY_LED` constant and the `save_profile` split
+  remain, since they still benefit Trio and G3.
 
 ## Debugging + the `riingplus` alias
 

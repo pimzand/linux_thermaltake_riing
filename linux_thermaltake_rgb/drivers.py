@@ -149,11 +149,3 @@ class ThermaltakeRiingPlusControllerDriver(ThermaltakeG3ControllerDriver):
 class ThermaltakeRiingTrioControllerDriver(ThermaltakeG3ControllerDriver):
     PRODUCT_ID_BASE = 0x2135
     BY_LED = 0x24
-
-
-class ThermaltakeRiingQuadControllerDriver(ThermaltakeG3ControllerDriver):
-    PRODUCT_ID_BASE = 0x2260
-    BY_LED = 0x24
-
-    def save_profile(self):
-        pass
