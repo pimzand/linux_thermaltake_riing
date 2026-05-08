@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/chestm007/linux_thermaltake_riing.svg?style=svg)](https://circleci.com/gh/chestm007/linux_thermaltake_riing)  
-
 # Linux driver and daemon for Thermaltake Riing
 
 
@@ -15,29 +13,23 @@ Currently supported devices are (as they show up in thermaltakes TTRGBPLUS softw
 - Pacific W4 Plus CPU Waterblock  
 - Riing Plus  
 
-If your's isn't listed, please create an issue and I'll implement it ASAP!!  
-
 
 ## Installation
 
-### Pypi
+Install from a checkout:
 
-`sudo pip3 install linux_thermaltake_rgb`  
-The setup file will create the systemd unit
-in `/usr/share/linux_thermaltake_rgb`  
-you will need to copy these to the appropriate locations:
+```bash
+sudo pip3 install .
+```
+
+The package ships the systemd unit and an example config in
+`/usr/share/linux_thermaltake_rgb`. On first install, copy them into place:
 
 ```bash
 sudo cp /usr/share/linux_thermaltake_rgb/linux-thermaltake-rgb.service /usr/lib/systemd/system/
-
-# and if this is a fresh install copy the default config file:
-sudo mkdir /etc/linux_thermaltake_rgb/
+sudo mkdir -p /etc/linux_thermaltake_rgb/
 sudo cp /usr/share/linux_thermaltake_rgb/config.yml /etc/linux_thermaltake_rgb/
 ```
-
-### Arch linux
-
-available in the aur as `linux-thermaltake-rgb`
 
 ### Starting and Enabling the Daemon
 
