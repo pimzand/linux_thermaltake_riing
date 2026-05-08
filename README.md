@@ -53,7 +53,9 @@ example config is in `linux_thermaltake_rgb/assets/config.yml`
 
 ### Controller Types
 - g3
+- riingplus (alias for g3)
 - riingtrio
+- riingquad
 
 ### Devices
 
