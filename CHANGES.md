@@ -73,3 +73,25 @@ That is why the alias "worked as magic." Later cleanup deleted the broken
 `ThermaltakeRiingPlusController` into a true alias (a one-line subclass of
 the G3 controller); the duplicate `ThermaltakeRiingPlusControllerDriver`
 was removed.
+
+### Why this stayed hidden upstream for ~7 years
+
+- **Single-controller setups don't trigger it.** With `unit=1` (the
+  default), the wasted first driver build hits the same USB device as the
+  rebuild. The doubled init is silent — no functional difference, no
+  user-visible symptom. Most users own one G3.
+- **Multi-G3 users are rare**, and when the bug does fire the symptom is
+  flaky USB state at startup, not a hard error. Easy to misread as a udev
+  issue, the kernel HID driver re-attaching, or "Thermaltake hardware
+  being weird."
+- **The fork's own author worked around it without realizing.** Commit
+  `a6009e9`'s message ("this works as magic for me") is literal: switching
+  the YAML from `type: g3` to `type: riingplus` routed instantiation
+  through a class with no `__init__` override, dodging the bug. The
+  workaround stuck because it worked, so the cause stayed buried.
+- **Tests don't catch it.** `test_controller_factory` constructs with
+  `_initialize_device` mocked, so the wrong-device USB claim is a no-op.
+  Even an explicit "construct unit 2" test would have passed.
+- **Upstream went quiet in 2019** (last PyPI upload 2019-07-28; AUR
+  package last touched 2019-03-06), so there was no maintainer left to
+  receive a bug report even if a multi-G3 user had filed one.
