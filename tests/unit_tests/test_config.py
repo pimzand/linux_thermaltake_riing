@@ -46,7 +46,7 @@ class ConfigTest(unittest.TestCase):
     def load_config_from_string(self, config):
         class MockConfig(Config):
             def load_config(self):
-                return yaml.load(config)
+                return yaml.safe_load(config)
         return MockConfig()
 
     def load_g3_config(self):

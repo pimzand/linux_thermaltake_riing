@@ -25,14 +25,20 @@ from linux_thermaltake_rgb.lighting_manager import LightingEffect
 class LightTest(unittest.TestCase):
 
     def test_light_factory(self):
-        config = {
-            'odd_rgb': dict(r=4, g=4, b=4),
-            'even_rgb': dict(r=4, g=4, b=4)
-        }
         for clazz in LightingEffect.inheritors():
             if clazz.model is None:
                 continue
-            config['model'] = clazz.model
+            config = {
+                'model': clazz.model,
+                'odd_rgb': dict(r=4, g=4, b=4),
+                'even_rgb': dict(r=4, g=4, b=4),
+                'cold_rgb': dict(r=0, g=0, b=255),
+                'hot_rgb': dict(r=255, g=0, b=0),
+                'timestamps': [
+                    ['00:00', 0, 0, 0],
+                    ['12:00', 255, 255, 255],
+                ],
+            }
 
             effect = LightingEffect.factory(config)
             self.assertIsInstance(effect, LightingEffect)
