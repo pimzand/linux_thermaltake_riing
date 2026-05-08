@@ -56,7 +56,7 @@ Consequence: **a new subclass is only discoverable if its module has been import
 - `drivers.py` — pyusb-level. The base class' `_initialize_device()` resets the device, detaches the kernel driver, claims interface 0, and finds the in/out endpoints.
 
 USB IDs and per-controller constants:
-- G3 / RiingPlus: `PRODUCT_ID_BASE = 0x1fa5`, `BY_LED = 0x18` — they share IDs (the `riingplus` controller is effectively a name alias for `g3`).
+- G3 / RiingPlus: `PRODUCT_ID_BASE = 0x1fa5`, `BY_LED = 0x18` — they share USB IDs and protocol. `ThermaltakeRiingPlusController` is a one-line subclass of `ThermaltakeG3Controller` that just changes `model`; there is no separate RiingPlus driver.
 - RiingTrio: `PRODUCT_ID_BASE = 0x2135`, `BY_LED = 0x24`.
 
 Historical note: a `riingquad` controller (`0x2260`) was added in this fork and later removed. The Riing Quad must NOT be sent the `0x32 0x53` save-profile command — it freezes the controller. If you re-add Quad support, override `save_profile` to a no-op in the Quad driver, as the now-removed `ThermaltakeRiingQuadControllerDriver` did.

@@ -46,11 +46,30 @@ recognized two controllers, `g3` and `riingtrio`.
 
 - `8ac34a7` — added `LOGGER` debug messages around USB writes in `drivers.py`.
 - `a6009e9` — **the "this works as magic for me" hack.** Added a `riingplus`
-  controller that is effectively a clone of `g3`: same
-  `PRODUCT_ID_BASE = 0x1fa5`, same `BY_LED = 0x18`. The Riing Plus hardware
-  speaks the G3 protocol and shares the G3's USB product ID, so configuring
-  the device as `g3` was already working — the alias just lets the config YAML
-  say `riingplus`. This commit also re-enabled `save_profile` on the base
-  class (safe now, since the Quad driver has its own no-op override).
+  controller that was a near-clone of `g3`: same `PRODUCT_ID_BASE = 0x1fa5`,
+  same `BY_LED = 0x18`. The Riing Plus hardware speaks the G3 protocol and
+  shares the G3's USB product ID, so the alias was effectively a rename.
+  This commit also re-enabled `save_profile` on the base class (safe now,
+  since the Quad driver has its own no-op override).
 - `f103023` — declared `python-dateutil` in `setup.py` (used by the
   time-of-day model).
+
+## Why the alias actually mattered (post-mortem)
+
+`type: g3` in the YAML did not work for `unit > 1`, but `type: riingplus`
+did. The reason is a long-standing upstream bug in
+`ThermaltakeG3Controller.__init__` (introduced in upstream `6c5eeb5`,
+2019): it called `super().__init__()` without forwarding `unit`, so the
+base class ran `init()` with the default `unit=1` and constructed a driver
+for product `0x1fa5` (initializing USB and claiming the interface), then
+the G3 constructor built a *second* driver for the actual unit. For
+`unit=1` this happened to work; for `unit=2` it claimed the wrong device
+first.
+
+`ThermaltakeRiingPlusController` did not reproduce that bug — it only
+overrode `init()` and let the base class carry `unit` through correctly.
+That is why the alias "worked as magic." Later cleanup deleted the broken
+`__init__` from `ThermaltakeG3Controller` and turned
+`ThermaltakeRiingPlusController` into a true alias (a one-line subclass of
+the G3 controller); the duplicate `ThermaltakeRiingPlusControllerDriver`
+was removed.

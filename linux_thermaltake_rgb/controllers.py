@@ -57,21 +57,12 @@ class ThermaltakeController(ClassifiedObject):
 class ThermaltakeG3Controller(ThermaltakeController):
     model = 'g3'
 
-    def __init__(self, unit=1):
-        super().__init__()
-        self.unit = unit
-        self.ports = 5
-        self.driver = drivers.ThermaltakeG3ControllerDriver(unit)
-
     def init(self):
         self.driver = drivers.ThermaltakeG3ControllerDriver(self.unit)
 
 
-class ThermaltakeRiingPlusController(ThermaltakeController):
+class ThermaltakeRiingPlusController(ThermaltakeG3Controller):
     model = 'riingplus'
-
-    def init(self):
-        self.driver = drivers.ThermaltakeRiingPlusControllerDriver(self.unit)
 
 
 class ThermaltakeRiingTrioController(ThermaltakeController):

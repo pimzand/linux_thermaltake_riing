@@ -141,11 +141,6 @@ class ThermaltakeG3ControllerDriver(ThermaltakeControllerDriver):
         self.write_out([0xfe, 0x33])
 
 
-class ThermaltakeRiingPlusControllerDriver(ThermaltakeG3ControllerDriver):
-    PRODUCT_ID_BASE = 0x1fa5
-    BY_LED = 0x18
-
-
 class ThermaltakeRiingTrioControllerDriver(ThermaltakeG3ControllerDriver):
     PRODUCT_ID_BASE = 0x2135
     BY_LED = 0x24
